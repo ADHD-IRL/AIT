@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Human + Machine</title>
+<meta name="description" content="AI transformation for the human enterprise. Adopt AI. Preserve judgment. Expand what people can do.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a two-register identity. Human voice = editorial serif + ochre; machine voice = monospace + cobalt.
+   Single 1120px column, asymmetric 4/8 splits for section heads, interactive diagrams carry the argument. */
+:root {
+  --paper: #F1F2EE;
+  --surface: #FBFBF9;
+  --ink: #131922;
+  --muted: #576170;
+  --rule: #D6D9D2;
+  --human: #A65F0B;
+  --human-soft: #F1E2CB;
+  --machine: #2C45C4;
+  --machine-soft: #DDE3F7;
+  --display: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --step--1: 0.84rem;
+  --step-0: 1.04rem;
+  --step-1: 1.3rem;
+  --step-2: 1.75rem;
+  --step-3: clamp(2rem, 4vw, 2.75rem);
+  --step-4: clamp(2.6rem, 6.4vw, 4.6rem);
+  --wrap: 1120px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E1217; --surface: #151A21; --ink: #E8EBEE; --muted: #98A2AE; --rule: #29303A;
+    --human: #E2A14C; --human-soft: #36280F; --machine: #93A6FF; --machine-soft: #1B2450;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E1217; --surface: #151A21; --ink: #E8EBEE; --muted: #98A2AE; --rule: #29303A;
+  --human: #E2A14C; --human-soft: #36280F; --machine: #93A6FF; --machine-soft: #1B2450;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--body); font-size: var(--step-0); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--machine); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; }
+.h { color: var(--human); font-family: var(--display); font-style: italic; }
+.m { color: var(--machine); font-family: var(--mono); font-size: 0.82em; letter-spacing: 0.02em; text-transform: uppercase; }
+.label {
+  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+
+/* Header */
+.site-head {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule);
+}
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 14px; }
+.wordmark { display: inline-flex; align-items: baseline; gap: 0.38em; text-decoration: none; font-size: 1.35rem; white-space: nowrap; }
+.wordmark .h { color: var(--ink); font-size: 1.12em; }
+.wordmark .plus { font-family: var(--mono); color: var(--human); font-weight: 500; }
+.wordmark .m { color: var(--ink); font-size: 0.72em; font-weight: 500; letter-spacing: 0.08em; }
+nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 26px; font-size: 0.93rem; }
+nav a { text-decoration: none; color: var(--muted); }
+nav a:hover { color: var(--ink); }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer;
+  font: 500 0.95rem var(--body); padding: 11px 18px; border-radius: 3px;
+  border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+}
+.btn:hover { background: transparent; color: var(--ink); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--paper); }
+.head-cta { padding: 8px 14px; font-size: 0.88rem; }
+@media (max-width: 860px) { nav { display: none; } }
+
+/* Hero */
+.hero { padding-block: clamp(48px, 8vw, 96px) 40px; }
+.hero .label { margin-bottom: 26px; display: block; }
+.hero h1 { font-size: var(--step-4); line-height: 1.02; max-width: 15ch; }
+.hero h1 .h { font-style: italic; }
+.hero h1 .m { font-size: 0.5em; vertical-align: 0.42em; letter-spacing: 0.04em; }
+.hero-lede { margin-top: 28px; max-width: 58ch; font-size: var(--step-1); line-height: 1.5; color: var(--muted); }
+.hero-lede strong { color: var(--ink); font-weight: 500; }
+.hero-actions { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Hours experiment */
+.experiment { margin-top: clamp(48px, 7vw, 80px); border-top: 1px solid var(--ink); padding-top: 22px; }
+.exp-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 18px; }
+.exp-head h2 { font-size: var(--step-2); max-width: 30ch; }
+.toggle { display: inline-flex; border: 1px solid var(--ink); border-radius: 3px; overflow: hidden; }
+.toggle button {
+  font: 500 0.88rem var(--body); padding: 9px 14px; border: 0; background: transparent; color: var(--ink); cursor: pointer;
+}
+.toggle button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.hours { margin-top: 26px; display: grid; gap: 10px; }
+.row-label { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.grid8 { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.cell {
+  min-height: 74px; padding: 9px 9px 8px; border: 1px solid var(--rule); background: var(--surface);
+  font-size: 0.8rem; line-height: 1.25; display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+  transition: background .35s ease, color .35s ease, border-color .35s ease;
+}
+.cell .n { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cell.mech { background: var(--surface); }
+.cell.mech .t { color: var(--muted); }
+.cell.human { background: var(--human-soft); border-color: transparent; }
+.cell.freed-h { background: var(--human); color: var(--paper); border-color: var(--human); font-family: var(--display); font-size: 0.95rem; font-style: italic; }
+.cell.freed-h .n { color: color-mix(in srgb, var(--paper) 75%, transparent); }
+.cell.freed-a { background: repeating-linear-gradient(135deg, var(--surface) 0 6px, var(--rule) 6px 7px); color: var(--muted); }
+.machine-strip {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--machine-soft); color: var(--machine);
+  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.04em; border-left: 3px solid var(--machine);
+}
+.exp-out { margin-top: 22px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.exp-out .q { font-family: var(--display); font-size: var(--step-1); line-height: 1.35; }
+.exp-out p.note { color: var(--muted); }
+@media (max-width: 760px) {
+  .grid8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .exp-out { grid-template-columns: 1fr; gap: 12px; }
+}
+
+/* Sections */
+section.block { padding-block: clamp(64px, 9vw, 112px); border-top: 1px solid var(--rule); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; margin-bottom: 48px; }
+.sec-head h2 { font-size: var(--step-3); line-height: 1.08; }
+.sec-head .intro { color: var(--muted); font-size: var(--step-1); line-height: 1.5; max-width: 52ch; }
+.sec-head .label { display: block; margin-bottom: 14px; }
+@media (max-width: 860px) { .sec-head { grid-template-columns: 1fr; gap: 16px; } }
+
+/* Thesis */
+.thesis { padding-block: clamp(72px, 10vw, 128px); background: var(--ink); color: var(--paper); }
+.thesis .label { color: color-mix(in srgb, var(--paper) 60%, transparent); }
+.thesis blockquote { margin: 22px 0 0; font-family: var(--display); font-size: clamp(1.8rem, 4vw, 3.1rem); line-height: 1.16; max-width: 26ch; text-wrap: balance; }
+.thesis blockquote em { color: var(--human-soft); }
+.thesis .after { margin-top: 30px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; max-width: 860px; color: color-mix(in srgb, var(--paper) 78%, transparent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .thesis { background: var(--surface); color: var(--ink); } :root:not([data-theme="light"]) .thesis .label, :root:not([data-theme="light"]) .thesis .after { color: var(--muted); } :root:not([data-theme="light"]) .thesis blockquote em { color: var(--human); } }
+:root[data-theme="dark"] .thesis { background: var(--surface); color: var(--ink); }
+:root[data-theme="dark"] .thesis .label, :root[data-theme="dark"] .thesis .after { color: var(--muted); }
+:root[data-theme="dark"] .thesis blockquote em { color: var(--human); }
+@media (max-width: 700px) { .thesis .after { grid-template-columns: 1fr; gap: 16px; } }
+
+/* Problems */
+.problems { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; }
+.problems li { padding: 18px 0; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 8px; }
+.problems li::before { content: "—"; color: var(--muted); font-family: var(--mono); }
+.problems li.key { grid-column: 1 / -1; border-top: 1px solid var(--ink); padding-top: 26px; }
+.problems li.key::before { content: "→"; color: var(--human); }
+.problems li.key p { font-family: var(--display); font-size: var(--step-2); line-height: 1.25; }
+.problems li.key small { display: block; margin-top: 8px; color: var(--muted); font-family: var(--body); font-size: var(--step-0); }
+@media (max-width: 760px) { .problems { grid-template-columns: 1fr; } }
+
+/* Principles */
+.principles { display: grid; gap: 0; }
+.principle { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px; padding-block: 34px; border-top: 1px solid var(--rule); }
+.principle h3 { font-size: var(--step-2); line-height: 1.15; }
+.principle .body { display: grid; gap: 14px; max-width: 64ch; }
+.principle .body p { color: var(--muted); }
+.principle .body p.pull { color: var(--ink); font-family: var(--display); font-size: var(--step-1); line-height: 1.4; }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 6px; }
+.pair div { padding: 14px 16px; font-size: 0.94rem; }
+.pair .ph { background: var(--human-soft); }
+.pair .pm { background: var(--machine-soft); }
+.pair .tag { display: block; margin-bottom: 6px; }
+.pair .ph .tag { color: var(--human); }
+.pair .pm .tag { color: var(--machine); }
+.pair ul { margin: 0; padding-left: 1.1em; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font-family: var(--mono); font-size: 0.74rem; padding: 4px 9px; border: 1px solid var(--rule); border-radius: 20px; color: var(--muted); }
+@media (max-width: 860px) { .principle { grid-template-columns: 1fr; gap: 14px; } }
+@media (max-width: 560px) { .pair { grid-template-columns: 1fr; } }
+
+/* Cognition map */
+.map-tabs { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.map-scroll { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+table.map { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 0.9rem; }
+.map th, .map td { padding: 11px 12px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: middle; }
+.map thead th { font-family: var(--mono); font-weight: 500; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--paper); }
+.map thead th.mode { text-align: center; width: 9%; }
+.map td.verb { font-family: var(--display); font-size: 1.12rem; width: 15%; }
+.map td.dot { text-align: center; }
+.map td.why { color: var(--muted); font-size: 0.86rem; width: 36%; }
+.map tbody tr:last-child td { border-bottom: 0; }
+.pip { display: inline-block; width: 14px; height: 14px; border-radius: 50%; }
+.pip.a { background: var(--machine); }
+.pip.al { background: color-mix(in srgb, var(--machine) 60%, var(--human)); }
+.pip.as { background: color-mix(in srgb, var(--machine) 30%, var(--human)); }
+.pip.hl { background: color-mix(in srgb, var(--human) 80%, var(--machine)); }
+.pip.ho { background: var(--human); box-shadow: 0 0 0 3px var(--human-soft); }
+.scale-key { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.scale-key span:first-child { color: var(--machine); }
+.scale-key span:last-child { color: var(--human); }
+.map-note { margin-top: 18px; color: var(--muted); max-width: 70ch; }
+
+/* Services */
+.services { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.service { background: var(--paper); padding: 28px 26px 30px; display: grid; align-content: start; gap: 12px; }
+.service .meta { display: flex; justify-content: space-between; gap: 12px; }
+.service .stage { color: var(--machine); }
+.service h3 { font-size: 1.55rem; line-height: 1.15; }
+.service p { color: var(--muted); font-size: 0.97rem; }
+.service .deliv { margin-top: 4px; padding-top: 12px; border-top: 1px dashed var(--rule); font-size: 0.9rem; }
+.service .deliv b { font-weight: 600; }
+.service.signature { background: var(--surface); }
+.service.signature .flag { color: var(--human); }
+@media (max-width: 760px) { .services { grid-template-columns: 1fr; } }
+
+/* Method */
+.method { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; counter-reset: s; }
+.method li { counter-increment: s; padding: 22px 18px 24px 0; border-top: 3px solid var(--ink); position: relative; }
+.method li + li { padding-left: 18px; border-left: 1px solid var(--rule); }
+.method li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.method h3 { font-family: var(--mono); font-size: 0.95rem; letter-spacing: 0.1em; margin: 10px 0 10px; font-weight: 500; }
+.method p { font-family: var(--display); font-size: 1.1rem; line-height: 1.35; }
+.method li:last-child { border-top-color: var(--human); }
+.method li:last-child h3 { color: var(--human); }
+.method-foot { margin-top: 26px; color: var(--muted); max-width: 64ch; }
+@media (max-width: 960px) { .method { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; } .method li:nth-child(4) { border-left: 0; padding-left: 0; } }
+@media (max-width: 560px) { .method { grid-template-columns: 1fr; } .method li + li { border-left: 0; padding-left: 0; } }
+
+.p2p { margin-top: 56px; padding: 30px; background: var(--surface); border: 1px solid var(--rule); }
+.p2p h3 { font-size: var(--step-2); }
+.p2p > p { color: var(--muted); margin-top: 10px; max-width: 66ch; }
+.track { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.8rem; }
+.track span { padding: 7px 11px; border: 1px solid var(--rule); background: var(--paper); }
+.track i { font-style: normal; color: var(--muted); }
+.track span.trap { border-color: var(--machine); color: var(--machine); }
+.track span.goal { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Decision architecture */
+.spec { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: start; }
+.spec-copy { display: grid; gap: 16px; }
+.spec-copy p { color: var(--muted); }
+.spec-copy .shield { margin-top: 10px; padding: 20px 22px; border: 1px solid var(--ink); }
+.spec-copy .shield p { color: var(--ink); font-family: var(--display); font-size: var(--step-1); line-height: 1.35; }
+.spec-copy .shield p + p { margin-top: 8px; }
+.sheet { border: 1px solid var(--rule); background: var(--surface); font-size: 0.92rem; }
+.sheet-top { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+.sheet dl { margin: 0; }
+.sheet .r { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr) 4.6rem; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.sheet .r:last-child { border-bottom: 0; }
+.sheet dt { font-family: var(--mono); font-size: 0.78rem; }
+.sheet dd { margin: 0; color: var(--muted); }
+.sheet .who { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: right; }
+.sheet .who.ai { color: var(--machine); }
+.sheet .who.hu { color: var(--human); }
+@media (max-width: 900px) { .spec { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .sheet .r { grid-template-columns: minmax(0, 1fr) auto; } .sheet dd { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Not */
+.nots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 40px; list-style: none; margin: 0; padding: 0; }
+.nots li { padding: 16px 0; border-top: 1px solid var(--rule); font-family: var(--display); font-size: 1.28rem; line-height: 1.3; }
+.nots li s { text-decoration-color: var(--human); text-decoration-thickness: 2px; color: var(--muted); }
+.instead { margin-top: 40px; font-family: var(--display); font-size: var(--step-3); line-height: 1.15; max-width: 30ch; }
+@media (max-width: 860px) { .nots { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .nots { grid-template-columns: 1fr; } }
+
+/* Friction / combined intelligence */
+.friction { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 56px; align-items: start; }
+.friction-copy { display: grid; gap: 16px; max-width: 56ch; }
+.friction-copy p { color: var(--muted); }
+.friction-copy .wait { color: var(--ink); font-family: var(--display); font-style: italic; font-size: var(--step-2); line-height: 1.25; padding-left: 18px; border-left: 2px solid var(--human); }
+.combined { border-top: 1px solid var(--ink); }
+.combined h3 { font-size: var(--step-2); padding-block: 18px 6px; }
+.combined .sub { color: var(--muted); }
+.combo { margin-top: 22px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0 18px; align-items: center; }
+.combo ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.combo .hu li { font-family: var(--display); font-style: italic; font-size: 1.3rem; color: var(--human); text-align: right; }
+.combo .ma li { font-family: var(--mono); font-size: 0.86rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--machine); padding-block: 4px; }
+.combo .plus { font-family: var(--mono); font-size: 3rem; line-height: 1; color: var(--ink); }
+.combined .design { margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--rule); font-family: var(--display); font-size: var(--step-1); }
+@media (max-width: 860px) { .friction { grid-template-columns: 1fr; gap: 40px; } }
+
+/* Contact */
+.contact { background: var(--surface); }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 56px; align-items: start; }
+.contact h2 { font-size: var(--step-4); line-height: 1.02; }
+.contact .lede { margin-top: 20px; color: var(--muted); font-size: var(--step-1); max-width: 40ch; }
+form { display: grid; gap: 16px; }
+.field { display: grid; gap: 6px; }
+.field label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea {
+  font: 400 1rem var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 3px; padding: 11px 12px; width: 100%;
+}
+.field textarea { min-height: 120px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--machine); outline-offset: 0; border-color: transparent; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-msg { font-size: 0.92rem; color: var(--human); }
+@media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; gap: 36px; } }
+@media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+
+footer { padding-block: 40px 56px; border-top: 1px solid var(--rule); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; align-items: baseline; }
+footer p { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="Human + Machine, home"><span class="h">Human</span><span class="plus">+</span><span class="m">Machine</span></a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#view">Point of view</a></li>
+        <li><a href="#map">Cognition map</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#method">Method</a></li>
+      </ul>
+    </nav>
+    <a class="btn head-cta" href="#contact">Start a conversation</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="label">AI transformation for the human enterprise</span>
+      <h1>Adopt AI. Preserve <span class="h">judgment.</span> Expand what people can do.</h1>
+      <p class="hero-lede">We help organizations decide how they should operate when people and intelligent systems work together every day, and then we <strong>stay through implementation until that way of working is normal</strong>.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#contact">Talk to us about your organization</a>
+        <a class="btn ghost" href="#view">Read our point of view</a>
+      </div>
+
+      <div class="experiment" aria-labelledby="exp-title">
+        <div class="exp-head">
+          <div>
+            <span class="label">A thought experiment</span>
+            <h2 id="exp-title" style="margin-top:8px">An analyst spends eight hours on a report. AI can take five of those hours off the table.</h2>
+          </div>
+          <div class="toggle" role="group" aria-label="Choose a framing">
+            <button type="button" id="mode-auto" aria-pressed="false">The automation question</button>
+            <button type="button" id="mode-ours" aria-pressed="true">Our question</button>
+          </div>
+        </div>
+
+        <div class="hours">
+          <div class="row-label"><span>Today</span><span>8 h, all human</span></div>
+          <div class="grid8" id="row-today"></div>
+          <div class="row-label" style="margin-top:14px"><span>With AI</span><span id="with-ai-meta">8 h, human</span></div>
+          <div class="machine-strip"><span>AI ▸</span><span>gather · clean · compile · format · summarize, in minutes</span></div>
+          <div class="grid8" id="row-ai"></div>
+        </div>
+
+        <div class="exp-out">
+          <p class="q" id="exp-q"></p>
+          <p class="note" id="exp-note"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THESIS -->
+  <section class="thesis">
+    <div class="wrap">
+      <span class="label">The core idea</span>
+      <blockquote>The objective of AI transformation is not to minimize human cognition. It is to <em>increase the amount of meaningful cognition</em> an organization can apply to its work.</blockquote>
+      <div class="after">
+        <p>Most organizations treat AI as a technology deployment. They select a platform, license tools, identify use cases, train employees, and measure adoption. That framing leaves out most of what changes.</p>
+        <p>AI changes how information is gathered, how problems are framed, how alternatives are generated, how decisions are prepared, and how knowledge moves. We treat AI transformation as redesigning cognition across the enterprise.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="block" id="problem">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">The problem we solve</span><h2>Leaders know AI matters. They don't yet know where it belongs.</h2></div>
+        <p class="intro">Executives are facing several problems at once. Most of them come from treating AI as a tool rollout instead of a change in how work is done.</p>
+      </div>
+      <ul class="problems">
+        <li><p>Employees experiment on their own, which creates uneven capability and unmanaged risk.</p></li>
+        <li><p>Technology teams deploy tools without changing the workflows around them.</p></li>
+        <li><p>Organizations automate existing processes without asking whether those processes should exist in their current form.</p></li>
+        <li><p>AI pilots succeed technically and then fail to become normal operating practice.</p></li>
+        <li><p>Governance programs focus on preventing misuse and do little to enable productive use.</p></li>
+        <li><p>Training teaches people how to use a tool, not how to work differently with AI.</p></li>
+        <li class="key"><p>Organizations don't know which cognitive responsibilities should remain human.<small>That question gets harder, and more important, every time the models get more capable.</small></p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- POINT OF VIEW -->
+  <section class="block" id="view">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">Our point of view</span><h2>Five principles behind every engagement</h2></div>
+        <p class="intro">Our work is human-centered, and we mean more by that than keeping a "human in the loop." We protect the parts of work where human cognition is the source of value, and design AI to expand the environment around them.</p>
+      </div>
+
+      <div class="principles">
+        <article class="principle">
+          <h3>Start with the work, not the technology.</h3>
+          <div class="body">
+            <p class="pull">Start with what people are trying to accomplish. Then examine decisions, information, workflows, interactions, incentives, expertise, and constraints. Only then choose technology.</p>
+            <p>This is why we are vendor-neutral and capability-neutral. We don't resell platforms, so the recommendation follows the work.</p>
+          </div>
+        </article>
+
+        <article class="principle">
+          <h3>AI should extend cognition, not eliminate it.</h3>
+          <div class="body">
+            <p>Automation is the right answer where cognition adds little value. AI transformation becomes dangerous when convenience removes the effort that produces expertise, skepticism, understanding, or accountability.</p>
+            <div class="pair">
+              <div class="pm"><span class="label tag">Every transformation asks</span>What should the machine do?</div>
+              <div class="ph"><span class="label tag">And equally</span>What must the human continue to do?</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="principle">
+          <h3>Human judgment is a capability, not a ceremonial checkpoint.</h3>
+          <div class="body">
+            <p>Analysis and action are different things. AI can widen analytical breadth. People remain responsible for credibility judgments, prioritization, communication, and accountability.</p>
+            <p class="pull">A person clicking Approve after AI has done every meaningful step isn't a human in the loop. That's a human used as a liability shield.</p>
+            <p>We design systems that place real human judgment at the points where judgment matters.</p>
+          </div>
+        </article>
+
+        <article class="principle">
+          <h3>AI must become part of the operating system of work.</h3>
+          <div class="body">
+            <p>Transformation hasn't happened because 70% of employees opened a chatbot last month. It has happened when AI is a natural part of:</p>
+            <div class="chips"><span>strategy meetings</span><span>research</span><span>project planning</span><span>analysis</span><span>writing</span><span>decision preparation</span><span>knowledge discovery</span><span>customer interactions</span><span>operations</span><span>reviews</span><span>everyday problem solving</span></div>
+            <p>Capabilities that stay isolated produce reports. Integration with the normal processes of the business is what produces decisions.</p>
+          </div>
+        </article>
+
+        <article class="principle">
+          <h3>Humans and AI fail differently.</h3>
+          <div class="body">
+            <p>AI doesn't simply fix human limitations. It reduces some and introduces others. A mature design uses the strengths of each to check the weaknesses of the other.</p>
+            <div class="pair">
+              <div class="ph"><span class="label tag">AI can reduce</span>
+                <ul><li>Fatigue</li><li>Status effects</li><li>Reluctance to dissent</li></ul>
+              </div>
+              <div class="pm"><span class="label tag">AI can introduce</span>
+                <ul><li>Correlated errors</li><li>Convincing fluency without accuracy</li><li>No organic way to learn from its errors</li></ul>
+              </div>
+            </div>
+            <p class="pull">The useful question is how to build a system in which each one checks the other.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COGNITION MAP -->
+  <section class="block" id="map">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">Signature method · Work &amp; Cognition Discovery</span><h2>We map cognitive work, not just process steps.</h2></div>
+        <p class="intro">For each workflow we find where people search, remember, compare, synthesize, interpret, draft, challenge, predict, decide, and coordinate. Then we place each activity on a scale from automated to human-only, based on the value of human cognition in that activity, not on technical feasibility alone.</p>
+      </div>
+
+      <div class="map-tabs">
+        <div class="toggle" role="group" aria-label="Example workflow">
+          <button type="button" data-wf="market" aria-pressed="true">Quarterly market analysis</button>
+          <button type="button" data-wf="credit" aria-pressed="false">Commercial credit review</button>
+        </div>
+        <span class="label">Illustrative example</span>
+      </div>
+
+      <div class="map-scroll">
+        <table class="map">
+          <thead>
+            <tr>
+              <th scope="col">Activity</th>
+              <th scope="col" class="mode">Automated</th>
+              <th scope="col" class="mode">AI-led</th>
+              <th scope="col" class="mode">AI-assisted</th>
+              <th scope="col" class="mode">Human-led</th>
+              <th scope="col" class="mode">Human-only</th>
+              <th scope="col">Why it sits there</th>
+            </tr>
+          </thead>
+          <tbody id="map-body"></tbody>
+        </table>
+      </div>
+      <div class="scale-key"><span>◂ machine breadth, speed, persistence</span><span>human judgment, context, accountability ▸</span></div>
+      <p class="map-note">The map becomes the blueprint for redesign. Each row traces human cognition, information, judgment, interaction, AI opportunity, and who remains accountable.</p>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="block" id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">What we do</span><h2>Services organized around the transformation, not the technology</h2></div>
+        <p class="intro">Each service maps to a stage of our transformation model. Clients start where they are, and most engagements carry through to normal operations.</p>
+      </div>
+
+      <div class="services">
+        <article class="service">
+          <div class="meta"><span class="label stage">Understand</span></div>
+          <h3>AI Transformation Strategy</h3>
+          <p>Executive work that answers one question: what should AI change about this organization? It covers opportunity mapping, readiness, operating-model implications, risk posture, workforce implications, investment priorities, and the roadmap.</p>
+          <p class="deliv"><b>Deliverable:</b> an AI Transformation Blueprint connecting strategy, work, people, processes, information, technology, governance, and outcomes. Not a list of 47 use cases.</p>
+        </article>
+        <article class="service signature">
+          <div class="meta"><span class="label stage">Understand</span><span class="label flag">Signature</span></div>
+          <h3>Work &amp; Cognition Discovery</h3>
+          <p>We map how cognitive work actually happens in a function, then decide what should be automated, AI-led, AI-assisted, human-led, or human-only, weighted by the value of human cognition in each activity.</p>
+          <p class="deliv"><b>Deliverable:</b> a cognition map for each workflow in scope.</p>
+        </article>
+        <article class="service">
+          <div class="meta"><span class="label stage">Redesign</span></div>
+          <h3>AI-Integrated Workflow Redesign</h3>
+          <p>We don't add a chatbot to the current process. We ask what the process would look like if intelligent assistance had always existed: removing steps, changing sequence and handoffs, surfacing information earlier, redesigning meetings, adding challenge stages.</p>
+          <p class="deliv"><b>Deliverable:</b> redesigned workflows with people shifted toward higher-value judgment.</p>
+        </article>
+        <article class="service signature">
+          <div class="meta"><span class="label stage">Redesign · Govern</span><span class="label flag">Signature</span></div>
+          <h3>Human-AI Decision Architecture</h3>
+          <p>For consequential workflows we specify what AI proposes and may execute, what people inspect, challenge, and decide, what needs escalation, what evidence is retained, and who remains accountable.</p>
+          <p class="deliv"><b>Deliverable:</b> a decision architecture that moves governance out of policy documents and into the work.</p>
+        </article>
+        <article class="service">
+          <div class="meta"><span class="label stage">Integrate</span></div>
+          <h3>Implementation &amp; Integration</h3>
+          <p>Then we build it. Depending on the problem that may mean enterprise AI platforms, existing SaaS AI, custom applications, agents, knowledge systems, analytics, or decision support. We don't sell any of them. Technology serves the operating model.</p>
+          <p class="deliv"><b>Deliverable:</b> working systems inside real workflows.</p>
+        </article>
+        <article class="service">
+          <div class="meta"><span class="label stage">Adopt</span></div>
+          <h3>AI Fluency &amp; Cognitive Partnership</h3>
+          <p>This isn't prompt-engineering training. People learn to decompose problems, delegate cognitive tasks, interrogate AI, recognize plausible nonsense, validate outputs, keep independent judgment, use AI to challenge their own thinking, and know when not to use it.</p>
+          <p class="deliv"><b>Outcome:</b> a new professional skill, working well with nonhuman intelligence.</p>
+        </article>
+        <article class="service">
+          <div class="meta"><span class="label stage">Govern</span></div>
+          <h3>AI Governance by Design</h3>
+          <p>Governance built into workflows instead of a 70-page policy: authority, data access, traceability, validation, accountability, model limitations, escalation, monitoring, auditability, and acceptable autonomy. Outputs connect to evidence people can inspect.</p>
+          <p class="deliv"><b>Principle:</b> trust is engineered, not assumed.</p>
+        </article>
+        <article class="service">
+          <div class="meta"><span class="label stage">Evolve</span></div>
+          <h3>Pilot-to-Practice Transformation</h3>
+          <p>We don't leave after deployment. We carry work from experiment through pilot, adoption, and integration into normal operations and continuous improvement, building the ownership, sustainment, and governance that pilots usually lack.</p>
+          <p class="deliv"><b>Outcome:</b> AI as everyday practice, not a successful demo.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section class="block" id="method">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">The transformation model</span><h2>Six stages, and the last one never ends</h2></div>
+        <p class="intro">This isn't a one-time digital transformation. The technology keeps changing, so the operating model has to keep learning with it.</p>
+      </div>
+
+      <ol class="method">
+        <li><h3>UNDERSTAND</h3><p>How does work really happen?</p></li>
+        <li><h3>REDESIGN</h3><p>How should humans and AI divide cognitive work?</p></li>
+        <li><h3>INTEGRATE</h3><p>How does AI become part of actual systems and workflows?</p></li>
+        <li><h3>ADOPT</h3><p>How do people build the skills and habits to use it naturally?</p></li>
+        <li><h3>GOVERN</h3><p>Where do authority, validation, accountability, and boundaries sit?</p></li>
+        <li><h3>EVOLVE</h3><p>How does the model change as people, models, and the organization learn?</p></li>
+      </ol>
+
+      <div class="p2p">
+        <span class="label">Avoiding the pilot trap</span>
+        <h3 style="margin-top:8px">A technically successful pilot can still fail.</h3>
+        <p>It fails when stakeholder understanding, integration, sustainment, governance, and ownership never develop around it. That's what is happening to many enterprise AI programs. We plan for the whole path from the start.</p>
+        <div class="track" aria-label="Pilot-to-practice path">
+          <span>Experiment</span><i>→</i><span class="trap">Pilot</span><i>→</i><span>Adoption</span><i>→</i><span>Integration</span><i>→</i><span class="goal">Normal operations</span><i>→</i><span>Continuous improvement</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DECISION ARCHITECTURE -->
+  <section class="block" id="decisions">
+    <div class="wrap">
+      <div class="spec">
+        <div class="spec-copy">
+          <span class="label">Human-AI decision architecture</span>
+          <h2 style="font-size:var(--step-3);line-height:1.08">Some decisions are not delegable.</h2>
+          <p>Framing the problem, accepting results, setting priorities, accepting risk, judging completeness, and signing off stay with people. For every consequential workflow, we write down exactly where the line sits.</p>
+          <div class="shield">
+            <p>Human-in-the-loop means judgment at the points where judgment matters.</p>
+            <p class="h">Anything less is a rubber stamp.</p>
+          </div>
+        </div>
+        <div class="sheet" role="region" aria-label="Example decision architecture">
+          <div class="sheet-top"><span class="label">Decision spec · example</span><span class="label">Vendor risk assessment</span></div>
+          <dl>
+            <div class="r"><dt>What AI proposes</dt><dd>Risk ratings with linked evidence for each vendor</dd><span class="who ai">AI</span></div>
+            <div class="r"><dt>What AI may execute</dt><dd>Questionnaire follow-ups and document collection</dd><span class="who ai">AI</span></div>
+            <div class="r"><dt>What humans inspect</dt><dd>Evidence behind every rating above "moderate"</dd><span class="who hu">Human</span></div>
+            <div class="r"><dt>What humans challenge</dt><dd>Ratings that conflict with relationship history</dd><span class="who hu">Human</span></div>
+            <div class="r"><dt>What humans decide</dt><dd>Approve, remediate, or exit the vendor</dd><span class="who hu">Human</span></div>
+            <div class="r"><dt>What requires escalation</dt><dd>Critical vendors and any accepted residual risk</dd><span class="who hu">Human</span></div>
+            <div class="r"><dt>Evidence retained</dt><dd>Sources, model version, reviewer, and rationale</dd><span class="who ai">Both</span></div>
+            <div class="r"><dt>Who remains accountable</dt><dd>Named risk owner in the business unit</dd><span class="who hu">Human</span></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE ARE NOT -->
+  <section class="block" id="not">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="label">What we are not</span><h2>Clear about where we stop</h2></div>
+        <p class="intro">Our position is easier to understand when you see what we deliberately don't do.</p>
+      </div>
+      <ul class="nots">
+        <li><s>An AI tool reseller</s></li>
+        <li><s>A chatbot company</s></li>
+        <li><s>An automation consultancy</s></li>
+        <li><s>A prompt-engineering training company</s></li>
+        <li><s>A strategy firm that hands over slides and leaves</s></li>
+        <li><s>An integrator that treats adoption as someone else's problem</s></li>
+      </ul>
+      <p class="instead">We redesign organizations for a world where human and machine intelligence work together every day, and we stay until that way of working <span class="h">becomes normal.</span></p>
+    </div>
+  </section>
+
+  <!-- PRODUCTIVE FRICTION -->
+  <section class="block" id="friction">
+    <div class="wrap">
+      <div class="friction">
+        <div class="friction-copy">
+          <span class="label">The bigger position</span>
+          <h2 style="font-size:var(--step-3);line-height:1.08">Some cognitive effort is productive friction.</h2>
+          <p>Much of the AI conversation treats human effort as inefficiency. If research takes four hours and AI can do it in four minutes, the obvious conclusion is that we saved 3 hours and 56 minutes.</p>
+          <p>But effort builds understanding. It develops intuition, exposes contradictions, and creates expertise. Expertise is more than accumulated facts: it is structured patterns that change what an expert notices. It produces the moment when someone says:</p>
+          <p class="wait">"Wait. Something about this doesn't make sense."</p>
+          <p>An organization that removes cognitive effort indiscriminately can become more productive while becoming less capable. That's the problem we exist to solve.</p>
+        </div>
+        <div class="combined">
+          <h3>The goal is maximum combined intelligence.</h3>
+          <p class="sub">Not maximum AI utilization, and not maximum automation.</p>
+          <div class="combo">
+            <ul class="hu"><li>experience</li><li>curiosity</li><li>judgment</li><li>accountability</li></ul>
+            <span class="plus" aria-hidden="true">+</span>
+            <ul class="ma"><li>breadth</li><li>speed</li><li>persistence</li><li>synthesis</li></ul>
+          </div>
+          <p class="design">Designed together, deliberately.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="block contact" id="contact">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div>
+          <span class="label">Start a conversation</span>
+          <h2 style="margin-top:14px">Better thinking. Better work. <span class="h">Amplified by AI.</span></h2>
+          <p class="lede">Tell us where your organization is today: exploring, piloting, or trying to make AI part of everyday work. We'll start with the work.</p>
+        </div>
+        <form id="contact-form" novalidate>
+          <div class="two">
+            <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+            <div class="field"><label for="f-org">Organization</label><input id="f-org" name="org" autocomplete="organization"></div>
+          </div>
+          <div class="field"><label for="f-email">Work email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="field">
+            <label for="f-stage">Where are you today?</label>
+            <select id="f-stage" name="stage">
+              <option>Exploring where AI belongs</option>
+              <option>Running pilots</option>
+              <option>Scaling pilots into practice</option>
+              <option>Governing AI already in use</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-msg">What are your people trying to accomplish?</label><textarea id="f-msg" name="message"></textarea></div>
+          <div><button class="btn" type="submit">Send</button></div>
+          <p class="form-msg" id="form-msg" role="status" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="Human + Machine, back to top"><span class="h">Human</span><span class="plus">+</span><span class="m">Machine</span></a>
+    <p>Adopt AI. Preserve judgment. Expand what people can do.</p>
+    <p>© 2026 Human + Machine</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Hours experiment
+  var today = ["Gather data", "Clean", "Compile", "Format", "Summarize", "Interpret", "Judge", "Write up"];
+  var kept = ["Interpret", "Judge", "Write up"];
+  var ours = ["Question assumptions", "Investigate alternatives", "Look outside the discipline", "Challenge the AI", "Talk to the people affected"];
+  var modes = {
+    auto: {
+      q: "“How can AI reduce this to one hour?”",
+      note: "The freed hours become more of the same output. Sometimes throughput is what matters. But the organization gets eight times the reports and no more understanding.",
+      meta: "1 h of thinking, 7 h of more reports"
+    },
+    ours: {
+      q: "“If AI removes five hours of mechanical work, what should the person do with the five hours we just gave back?”",
+      note: "Explore the thing that doesn't fit. Challenge the conclusions. Think. The machine takes the mechanical cognition so people can spend more time on the cognition that creates value.",
+      meta: "8 h, human, aimed higher"
+    }
+  };
+  function cell(cls, n, t) {
+    var d = document.createElement("div");
+    d.className = "cell " + cls;
+    d.innerHTML = '<span class="n">h' + n + '</span><span class="t"></span>';
+    d.querySelector(".t").textContent = t;
+    return d;
+  }
+  var rowToday = document.getElementById("row-today");
+  today.forEach(function (t, i) { rowToday.appendChild(cell(i < 5 ? "mech" : "human", i + 1, t)); });
+  var rowAi = document.getElementById("row-ai");
+  function setMode(m) {
+    rowAi.innerHTML = "";
+    if (m === "auto") {
+      rowAi.appendChild(cell("human", 1, "Interpret, judge, write up"));
+      for (var i = 2; i <= 8; i++) rowAi.appendChild(cell("freed-a", i, "Report #" + i));
+    } else {
+      kept.forEach(function (t, i) { rowAi.appendChild(cell("human", i + 1, t)); });
+      ours.forEach(function (t, i) { rowAi.appendChild(cell("freed-h", i + 4, t)); });
+    }
+    document.getElementById("exp-q").textContent = modes[m].q;
+    document.getElementById("exp-note").textContent = modes[m].note;
+    document.getElementById("with-ai-meta").textContent = modes[m].meta;
+    document.getElementById("mode-auto").setAttribute("aria-pressed", m === "auto");
+    document.getElementById("mode-ours").setAttribute("aria-pressed", m === "ours");
+  }
+  document.getElementById("mode-auto").addEventListener("click", function () { setMode("auto"); });
+  document.getElementById("mode-ours").addEventListener("click", function () { setMode("ours"); });
+  setMode("ours");
+
+  // Cognition map. Mode index: 0 automated, 1 AI-led, 2 AI-assisted, 3 human-led, 4 human-only
+  var pips = ["a", "al", "as", "hl", "ho"];
+  var workflows = {
+    market: [
+      ["Search", 1, "Breadth matters more than taste here. AI scans filings, news, and transcripts far wider than a person can."],
+      ["Remember", 0, "Recalling prior quarters' figures and definitions adds little value when done by hand."],
+      ["Compare", 1, "AI lines up competitors and periods; people check that the comparisons are like for like."],
+      ["Calculate", 0, "Deterministic and checkable. Automate it and keep the formulas visible."],
+      ["Synthesize", 2, "AI drafts the synthesis. Analysts own what it emphasizes, because emphasis is a judgment."],
+      ["Draft", 2, "AI produces first drafts; the analyst writes the argument."],
+      ["Interpret", 3, "Meaning depends on context the model can't see: strategy, politics, history."],
+      ["Challenge", 3, "AI generates counter-arguments on demand. A person decides which ones deserve attention."],
+      ["Predict", 3, "Models propose scenarios; people weigh plausibility and stake their credibility on a view."],
+      ["Frame the question", 4, "Recognizing that the problem itself is framed wrongly is the most valuable step and stays human."],
+      ["Decide", 4, "Prioritization and accountability are non-delegable."]
+    ],
+    credit: [
+      ["Search", 0, "Pull financials, filings, and bureau data automatically."],
+      ["Remember", 0, "Policy limits and prior exposures retrieved from systems of record."],
+      ["Compare", 1, "AI benchmarks the borrower against peers and covenants."],
+      ["Calculate", 0, "Ratios and stress cases computed with traceable formulas."],
+      ["Synthesize", 2, "AI drafts the credit memo with every claim linked to source evidence."],
+      ["Interpret", 3, "Management quality and industry context need human reading."],
+      ["Challenge", 2, "AI acts as a structured devil's advocate; reviewers must answer each challenge."],
+      ["Predict", 3, "Model default probabilities inform, but don't replace, the officer's view."],
+      ["Coordinate", 2, "AI routes questions to relationship managers and tracks responses."],
+      ["Accept risk", 4, "Risk acceptance and sign-off stay with a named, accountable person."],
+      ["Decide", 4, "Credit committee decides. Evidence and rationale are retained for audit."]
+    ]
+  };
+  var body = document.getElementById("map-body");
+  function renderMap(key) {
+    body.innerHTML = "";
+    workflows[key].forEach(function (r) {
+      var tr = document.createElement("tr");
+      var html = '<td class="verb"></td>';
+      for (var i = 0; i < 5; i++) {
+        html += '<td class="dot">' + (i === r[1] ? '<span class="pip ' + pips[i] + '" role="img" aria-label="' + ["Automated", "AI-led", "AI-assisted", "Human-led", "Human-only"][i] + '"></span>' : "") + "</td>";
+      }
+      html += '<td class="why"></td>';
+      tr.innerHTML = html;
+      tr.querySelector(".verb").textContent = r[0];
+      tr.querySelector(".why").textContent = r[2];
+      body.appendChild(tr);
+    });
+    document.querySelectorAll("[data-wf]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.wf === key); });
+  }
+  document.querySelectorAll("[data-wf]").forEach(function (b) {
+    b.addEventListener("click", function () { renderMap(b.dataset.wf); });
+  });
+  renderMap("market");
+
+  // Contact form (not yet connected to a backend)
+  document.getElementById("contact-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = document.getElementById("form-msg");
+    var name = document.getElementById("f-name").value.trim();
+    var email = document.getElementById("f-email").value.trim();
+    msg.hidden = false;
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      msg.textContent = "Add your name and a valid work email so we can reply.";
+      return;
+    }
+    msg.textContent = "This is a preview site, so the form isn't connected yet. Your message was not sent.";
+  });
+})();
+</script>
+</body>
+</html>
