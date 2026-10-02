@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sorvanti</title>
 <meta name="description" content="Sorvanti: AI transformation for the human enterprise. Adopt AI. Preserve judgment. Expand what people can do.">
+<link rel="icon" type="image/png" href="assets/sorvanti-mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
@@ -39,18 +40,22 @@
   --space-xl: clamp(3.5rem, 2.6rem + 4vw, 7rem);
   --gutter: clamp(16px, 4vw, 40px);
   --wrap: 1120px;
+  --logo-light: inline-block;
+  --logo-dark: none;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #0E1217; --surface: #151A21; --ink: #E8EBEE; --muted: #98A2AE; --rule: #29303A;
     --human: #E2A14C; --human-soft: #36280F; --machine: #93A6FF; --machine-soft: #1B2450;
+    --logo-light: none; --logo-dark: inline-block;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0E1217; --surface: #151A21; --ink: #E8EBEE; --muted: #98A2AE; --rule: #29303A;
   --human: #E2A14C; --human-soft: #36280F; --machine: #93A6FF; --machine-soft: #1B2450;
+  --logo-light: none; --logo-dark: inline-block;
   color-scheme: dark;
 }
 
@@ -82,7 +87,10 @@ p { margin: 0; }
 }
 .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 14px; }
 .wordmark { display: inline-flex; align-items: center; gap: 0.7em; text-decoration: none; white-space: nowrap; }
-.wordmark .name { font-family: var(--display); font-size: 1.6rem; line-height: 1; letter-spacing: -0.015em; color: var(--ink); }
+.wordmark img { height: 38px; width: auto; max-width: none; }
+.wordmark .logo-l { display: var(--logo-light); }
+.wordmark .logo-d { display: var(--logo-dark); }
+@media (max-width: 420px) { .wordmark img { height: 32px; } }
 .wordmark .desc { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-left: 0.85em; border-left: 1px solid var(--rule); line-height: 1.5; }
 .wordmark .desc b { font-weight: 500; color: var(--human); }
 @media (max-width: 560px) { .wordmark .desc { display: none; } }
@@ -370,7 +378,7 @@ footer p { color: var(--muted); font-size: 0.9rem; }
 
 <header class="site-head">
   <div class="wrap">
-    <a class="wordmark" href="#top" aria-label="Sorvanti, home"><span class="name">Sorvanti</span><span class="desc">Human <b>+</b> Machine</span></a>
+    <a class="wordmark" href="#top" aria-label="Sorvanti, home"><img class="logo-l" src="assets/sorvanti-logo.png" alt="Sorvanti" width="116" height="38"><img class="logo-d" src="assets/sorvanti-logo-dark.png" alt="Sorvanti" width="116" height="38"><span class="desc">Human <b>+</b> Machine</span></a>
     <div class="head-right">
       <a class="btn head-cta" href="#contact">Start a conversation</a>
       <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span class="bars"></span></button>
@@ -759,7 +767,7 @@ footer p { color: var(--muted); font-size: 0.9rem; }
 
 <footer>
   <div class="wrap">
-    <a class="wordmark" href="#top" aria-label="Sorvanti, back to top"><span class="name">Sorvanti</span><span class="desc">Human <b>+</b> Machine</span></a>
+    <a class="wordmark" href="#top" aria-label="Sorvanti, back to top"><img class="logo-l" src="assets/sorvanti-logo.png" alt="Sorvanti" width="116" height="38"><img class="logo-d" src="assets/sorvanti-logo-dark.png" alt="Sorvanti" width="116" height="38"><span class="desc">Human <b>+</b> Machine</span></a>
     <p>Adopt AI. Preserve judgment. Expand what people can do.</p>
     <p>© 2026 Sorvanti</p>
   </div>
