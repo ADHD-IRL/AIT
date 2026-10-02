@@ -754,6 +754,7 @@ footer p { color: var(--muted); font-size: 0.9rem; }
             </select>
           </div>
           <div class="field"><label for="f-msg">What are your people trying to accomplish?</label><textarea id="f-msg" name="message"></textarea></div>
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
           <div><button class="btn" type="submit">Send</button></div>
           <p class="form-msg" id="form-msg" role="status" hidden></p>
         </form>
@@ -882,18 +883,43 @@ footer p { color: var(--muted); font-size: 0.9rem; }
   });
   renderMap("market");
 
-  // Contact form (not yet connected to a backend)
-  document.getElementById("contact-form").addEventListener("submit", function (e) {
+  // Contact form → Web3Forms (emails each inquiry to the address the key was created with).
+  // The access key is safe to publish: it can only send submissions to that inbox.
+  var WEB3FORMS_KEY = "bd6d6978-f2b7-408b-972d-f03c824b476f";
+  var contactForm = document.getElementById("contact-form");
+  var sendBtn = contactForm.querySelector('button[type="submit"]');
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+  contactForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    var msg = document.getElementById("form-msg");
-    var name = document.getElementById("f-name").value.trim();
-    var email = document.getElementById("f-email").value.trim();
+    var msg = document.getElementById("form-msg"), name = val("f-name"), email = val("f-email");
     msg.hidden = false;
-    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      msg.textContent = "Add your name and a valid work email so we can reply.";
-      return;
-    }
-    msg.textContent = "This is a preview site, so the form isn't connected yet. Your message was not sent.";
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = "Add your name and a valid work email so we can reply."; return; }
+    if (contactForm.querySelector('input[name="botcheck"]').checked) return;
+    if (WEB3FORMS_KEY.indexOf("YOUR_") === 0) { msg.textContent = "This is a preview site, so the form isn't connected yet. Your message was not sent."; return; }
+    var payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: "Website inquiry: " + name + (val("f-org") ? " (" + val("f-org") + ")" : "") + " · Transformation",
+      from_name: "Sorvanti website",
+      "Source": "Transformation website",
+      name: name,
+      email: email,
+      "Organization": val("f-org"),
+      "Where they are today": val("f-stage"),
+      message: val("f-msg"),
+      botcheck: false
+    };
+    sendBtn.disabled = true; sendBtn.textContent = "Sending…"; msg.textContent = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).then(function (data) {
+      if (!data.success) throw new Error(data.message || "Send failed");
+      msg.textContent = "Thanks, " + name.split(" ")[0] + ". Your message is on its way, and we'll be in touch soon.";
+      contactForm.reset();
+    }).catch(function () {
+      msg.textContent = "Your message didn't send. Check your connection and try again in a moment.";
+    }).then(function () { sendBtn.disabled = false; sendBtn.textContent = "Send"; });
   });
 })();
 </script>
